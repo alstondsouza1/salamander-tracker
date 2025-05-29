@@ -1,3 +1,4 @@
+// this component displays a list of available videos.
 export default function VideoChooserPage() {
   return (
     <div className="p-4">
