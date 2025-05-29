@@ -1,3 +1,0 @@
-# Salamander Tracker
-
------
