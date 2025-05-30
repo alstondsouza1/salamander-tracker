@@ -4,6 +4,9 @@ import Link from 'next/link';
 export const metadata = {
   title: 'Salamander Tracker',
   description: 'Track salamanders in videos using centroid detection',
+  icons: {
+    icon: '/favicon.ico', 
+  },
 };
 
 // root layout component for all the pages
