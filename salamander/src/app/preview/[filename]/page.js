@@ -1,5 +1,4 @@
 // this component displays the preview page for a selected video.
-// 
 export default function PreviewPage({ params }) {
     const { filename } = params;
   
