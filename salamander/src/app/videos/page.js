@@ -7,8 +7,12 @@ export default function VideoChooserPage() {
   const [videos, setVideos] = useState([]);
 
   useEffect(() => {
-    // simulate fetching video list from a server
-    setVideos(mockVideoList);
+    const fetchVideos = async () => {
+      const res = await fetch("/api/videos");
+      const data = await res.json();
+      setVideos(data);
+    };
+    fetchVideos();
   }, []);
 
   return (
