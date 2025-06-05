@@ -3,14 +3,22 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { mockVideoList } from "@/mock/videos";
 
 export default function VideoChooserPage() {
   const [videos, setVideos] = useState([]);
 
   useEffect(() => {
-    // simulate API call
-    setVideos(mockVideoList);
+    const fetchVideos = async () => {
+      try {
+        const res = await fetch("http://localhost:3001/api/videos");
+        const data = await res.json();
+        setVideos(data);
+      } catch (error) {
+        console.error("Error fetching videos:", error);
+      }
+    };
+
+    fetchVideos();
   }, []);
 
   return (

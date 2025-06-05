@@ -2,19 +2,24 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getMockThumbnailUrl } from "@/mock/thumbnails";
 
 export default function PreviewPage({ params }) {
   const { filename } = params;
+
   const [thumbnail, setThumbnail] = useState("");
   const [targetColor, setTargetColor] = useState("#ff0000");
   const [threshold, setThreshold] = useState(50);
   const [centroid, setCentroid] = useState({ x: 100, y: 100 });
 
+  const [jobId, setJobId] = useState(null);
+  const [status, setStatus] = useState(null);
+  const [resultUrl, setResultUrl] = useState(null);
+
+  // Load thumbnail and simulate centroid
   useEffect(() => {
     const fetchThumbnail = async () => {
       try {
-        const res = await fetch(`/api/videos/thumbnail/${filename}`);
+        const res = await fetch(`http://localhost:3001/api/videos/thumbnail/${filename}`);
         if (!res.ok) throw new Error("Failed to load thumbnail");
         const blob = await res.blob();
         setThumbnail(URL.createObjectURL(blob));
@@ -25,12 +30,39 @@ export default function PreviewPage({ params }) {
 
     fetchThumbnail();
 
-    // still using fake centroid
     setCentroid({
       x: Math.floor(Math.random() * 200),
       y: Math.floor(Math.random() * 200),
     });
   }, [filename, targetColor, threshold]);
+
+  // Handle processing job
+  const handleProcessClick = async () => {
+    const hex = targetColor.replace('#', '');
+    try {
+      const res = await fetch(
+        `http://localhost:3001/api/process/${filename}?targetColor=${hex}&threshold=${threshold}`,
+        { method: 'POST' }
+      );
+      const data = await res.json();
+      setJobId(data.jobId);
+      setStatus('processing');
+
+      // Poll for job status
+      const interval = setInterval(async () => {
+        const statusRes = await fetch(`http://localhost:3001/api/process/${data.jobId}/status`);
+        const statusData = await statusRes.json();
+
+        if (statusData.status === 'complete') {
+          clearInterval(interval);
+          setStatus('complete');
+          setResultUrl(`http://localhost:3001/results/${data.jobId}.csv`);
+        }
+      }, 2000);
+    } catch (err) {
+      console.error("Failed to start job:", err);
+    }
+  };
 
   return (
     <div className="p-4">
@@ -86,9 +118,25 @@ export default function PreviewPage({ params }) {
         </div>
       </div>
 
-      <button className="mt-6 bg-green-600 text-white px-4 py-2 rounded">
+      <button
+        className="mt-6 bg-green-600 text-white px-4 py-2 rounded"
+        onClick={handleProcessClick}
+      >
         Process Video with These Settings
       </button>
+
+      {status === 'processing' && (
+        <p className="mt-4 text-yellow-500">Processing video...</p>
+      )}
+
+      {status === 'complete' && (
+        <div className="mt-4">
+          <p className="text-green-600">Processing complete!</p>
+          <a href={resultUrl} download className="text-blue-600 underline">
+            Download CSV
+          </a>
+        </div>
+      )}
     </div>
   );
 }
