@@ -2,9 +2,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 
-export default function PreviewPage({ params }) {
-  const { filename } = params;
+export default function PreviewPage() {
+  const params = useParams();
+  const filename = params?.filename || "sample.mp4";
 
   const [thumbnail, setThumbnail] = useState("");
   const [targetColor, setTargetColor] = useState("#ff0000");
@@ -15,7 +17,6 @@ export default function PreviewPage({ params }) {
   const [status, setStatus] = useState(null);
   const [resultUrl, setResultUrl] = useState(null);
 
-  // Load thumbnail and simulate centroid
   useEffect(() => {
     const fetchThumbnail = async () => {
       try {
@@ -36,7 +37,6 @@ export default function PreviewPage({ params }) {
     });
   }, [filename, targetColor, threshold]);
 
-  // Handle processing job
   const handleProcessClick = async () => {
     const hex = targetColor.replace('#', '');
     try {
@@ -48,15 +48,14 @@ export default function PreviewPage({ params }) {
       setJobId(data.jobId);
       setStatus('processing');
 
-      // Poll for job status
       const interval = setInterval(async () => {
         const statusRes = await fetch(`http://localhost:3001/api/process/${data.jobId}/status`);
         const statusData = await statusRes.json();
 
-        if (statusData.status === 'complete') {
+        if (statusData.status === 'done') {
           clearInterval(interval);
           setStatus('complete');
-          setResultUrl(`http://localhost:3001/results/${data.jobId}.csv`);
+          setResultUrl(`http://localhost:3001${statusData.result}`);
         }
       }, 2000);
     } catch (err) {
