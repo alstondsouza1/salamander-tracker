@@ -1,11 +1,11 @@
-import Link from 'next/link';
+import Link from "next/link";
 
 // define metadata for the app
 export const metadata = {
-  title: 'Salamander Tracker',
-  description: 'Track salamanders in videos using centroid detection',
+  title: "Salamander Tracker",
+  description: "Track salamanders in videos using centroid detection",
   icons: {
-    icon: '/favicon.ico', 
+    icon: "/favicon.ico",
   },
 };
 

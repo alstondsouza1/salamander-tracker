@@ -1,9 +1,9 @@
 // this component displays a list of available videos.
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { mockVideoList } from '@/mock/videos';
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { mockVideoList } from "@/mock/videos";
 
 export default function VideoChooserPage() {
   const [videos, setVideos] = useState([]);
@@ -19,8 +19,11 @@ export default function VideoChooserPage() {
       <ul className="mt-4 space-y-2">
         {videos.map((video, idx) => (
           <li key={idx}>
-            {video} -{' '}
-            <Link href={`/preview/${encodeURIComponent(video)}`} className="text-blue-600 underline">
+            {video} -{" "}
+            <Link
+              href={`/preview/${encodeURIComponent(video)}`}
+              className="text-blue-600 underline"
+            >
               Preview
             </Link>
           </li>

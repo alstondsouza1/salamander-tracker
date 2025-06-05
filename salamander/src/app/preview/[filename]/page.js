@@ -1,21 +1,35 @@
 // this component displays the preview page for a selected video.
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { getMockThumbnailUrl } from '@/mock/thumbnails';
+import { useEffect, useState } from "react";
+import { getMockThumbnailUrl } from "@/mock/thumbnails";
 
 export default function PreviewPage({ params }) {
   const { filename } = params;
-  const [thumbnail, setThumbnail] = useState('');
-  const [targetColor, setTargetColor] = useState('#ff0000');
+  const [thumbnail, setThumbnail] = useState("");
+  const [targetColor, setTargetColor] = useState("#ff0000");
   const [threshold, setThreshold] = useState(50);
-  const [centroid, setCentroid] = useState({ x: 100, y: 100 }); // mock for now
+  const [centroid, setCentroid] = useState({ x: 100, y: 100 });
 
   useEffect(() => {
-    setThumbnail(getMockThumbnailUrl(filename));
+    const fetchThumbnail = async () => {
+      try {
+        const res = await fetch(`/api/videos/thumbnail/${filename}`);
+        if (!res.ok) throw new Error("Failed to load thumbnail");
+        const blob = await res.blob();
+        setThumbnail(URL.createObjectURL(blob));
+      } catch (err) {
+        console.error(err);
+      }
+    };
 
-    // Fake centroid logic — in the future, compute this based on settings
-    setCentroid({ x: Math.floor(Math.random() * 200), y: Math.floor(Math.random() * 200) });
+    fetchThumbnail();
+
+    // still using fake centroid
+    setCentroid({
+      x: Math.floor(Math.random() * 200),
+      y: Math.floor(Math.random() * 200),
+    });
   }, [filename, targetColor, threshold]);
 
   return (
@@ -24,7 +38,7 @@ export default function PreviewPage({ params }) {
 
       <div className="flex items-center gap-4 mb-4">
         <label>
-          🎨 Target Color:
+          Target Color:
           <input
             type="color"
             value={targetColor}
@@ -34,7 +48,7 @@ export default function PreviewPage({ params }) {
         </label>
 
         <label>
-          🎚️ Threshold:
+          Threshold:
           <input
             type="range"
             min="0"
@@ -56,15 +70,19 @@ export default function PreviewPage({ params }) {
             style={{
               left: `${centroid.x}px`,
               top: `${centroid.y}px`,
-              transform: 'translate(-50%, -50%)',
-              position: 'absolute',
+              transform: "translate(-50%, -50%)",
+              position: "absolute",
             }}
           ></div>
         </div>
 
         <div>
           <p className="font-semibold mb-1">Binarized Frame (with centroid)</p>
-          <img src={thumbnail} alt="Binarized" className="w-64 border grayscale" />
+          <img
+            src={thumbnail}
+            alt="Binarized"
+            className="w-64 border grayscale"
+          />
         </div>
       </div>
 
