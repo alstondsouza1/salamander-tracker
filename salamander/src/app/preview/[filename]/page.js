@@ -5,10 +5,10 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 
 export default function PreviewPage() {
-  const params = useParams();
-  const filename = params?.filename || "sample.mp4";
+  const { filename } = useParams(); 
 
   const [thumbnail, setThumbnail] = useState("");
+  const [binarized, setBinarized] = useState("");
   const [targetColor, setTargetColor] = useState("#ff0000");
   const [threshold, setThreshold] = useState(50);
   const [centroid, setCentroid] = useState({ x: 100, y: 100 });
@@ -18,23 +18,27 @@ export default function PreviewPage() {
   const [resultUrl, setResultUrl] = useState(null);
 
   useEffect(() => {
-    const fetchThumbnail = async () => {
+    const fetchImages = async () => {
       try {
         const res = await fetch(`http://localhost:3001/api/videos/thumbnail/${filename}`);
         if (!res.ok) throw new Error("Failed to load thumbnail");
         const blob = await res.blob();
         setThumbnail(URL.createObjectURL(blob));
+
+        // preview binarized frame
+        const previewRes = await fetch(
+          `http://localhost:3001/api/videos/preview/${filename}?targetColor=${targetColor.replace("#", "")}&threshold=${threshold}`
+        );
+        if (previewRes.ok) {
+          const binBlob = await previewRes.blob();
+          setBinarized(URL.createObjectURL(binBlob));
+        }
       } catch (err) {
         console.error(err);
       }
     };
 
-    fetchThumbnail();
-
-    setCentroid({
-      x: Math.floor(Math.random() * 200),
-      y: Math.floor(Math.random() * 200),
-    });
+    fetchImages();
   }, [filename, targetColor, threshold]);
 
   const handleProcessClick = async () => {
@@ -52,10 +56,11 @@ export default function PreviewPage() {
         const statusRes = await fetch(`http://localhost:3001/api/process/${data.jobId}/status`);
         const statusData = await statusRes.json();
 
+        // ✅ Fix: status should be 'done'
         if (statusData.status === 'done') {
           clearInterval(interval);
-          setStatus('complete');
-          setResultUrl(`http://localhost:3001${statusData.result}`);
+          setStatus('done');
+          setResultUrl(`http://localhost:3001/results/${data.jobId}.csv`);
         }
       }, 2000);
     } catch (err) {
@@ -70,24 +75,12 @@ export default function PreviewPage() {
       <div className="flex items-center gap-4 mb-4">
         <label>
           Target Color:
-          <input
-            type="color"
-            value={targetColor}
-            onChange={(e) => setTargetColor(e.target.value)}
-            className="ml-2"
-          />
+          <input type="color" value={targetColor} onChange={(e) => setTargetColor(e.target.value)} className="ml-2" />
         </label>
 
         <label>
           Threshold:
-          <input
-            type="range"
-            min="0"
-            max="255"
-            value={threshold}
-            onChange={(e) => setThreshold(parseInt(e.target.value))}
-            className="ml-2"
-          />
+          <input type="range" min="0" max="255" value={threshold} onChange={(e) => setThreshold(parseInt(e.target.value))} className="ml-2" />
           <span className="ml-2">{threshold}</span>
         </label>
       </div>
@@ -96,8 +89,7 @@ export default function PreviewPage() {
         <div className="relative">
           <p className="font-semibold mb-1">Original Frame (with centroid)</p>
           <img src={thumbnail} alt="Original" className="w-64 border" />
-          <div
-            className="absolute w-4 h-4 bg-green-500 rounded-full border border-white"
+          <div className="absolute w-4 h-4 bg-green-500 rounded-full border border-white"
             style={{
               left: `${centroid.x}px`,
               top: `${centroid.y}px`,
@@ -108,32 +100,20 @@ export default function PreviewPage() {
         </div>
 
         <div>
-          <p className="font-semibold mb-1">Binarized Frame (with centroid)</p>
-          <img
-            src={thumbnail}
-            alt="Binarized"
-            className="w-64 border grayscale"
-          />
+          <p className="font-semibold mb-1">Binarized Frame (preview)</p>
+          <img src={binarized} alt="Binarized" className="w-64 border" />
         </div>
       </div>
 
-      <button
-        className="mt-6 bg-green-600 text-white px-4 py-2 rounded"
-        onClick={handleProcessClick}
-      >
+      <button className="mt-6 bg-green-600 text-white px-4 py-2 rounded" onClick={handleProcessClick}>
         Process Video with These Settings
       </button>
 
-      {status === 'processing' && (
-        <p className="mt-4 text-yellow-500">Processing video...</p>
-      )}
-
-      {status === 'complete' && (
+      {status === 'processing' && <p className="mt-4 text-yellow-500">Processing video...</p>}
+      {status === 'done' && (
         <div className="mt-4">
           <p className="text-green-600">Processing complete!</p>
-          <a href={resultUrl} download className="text-blue-600 underline">
-            Download CSV
-          </a>
+          <a href={resultUrl} download className="text-blue-600 underline">Download CSV</a>
         </div>
       )}
     </div>
