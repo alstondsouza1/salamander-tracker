@@ -1,26 +1,67 @@
-import Link from "next/link";
+// === src/app/layout.js ===
+'use client';
 
-// define metadata for the app
-export const metadata = {
-  title: "Salamander Tracker",
-  description: "Track salamanders in videos using centroid detection",
-  icons: {
-    icon: "/favicon.ico",
-  },
-};
+import { useState, useMemo } from 'react';
+import {
+  CssBaseline,
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  Button,
+  Container,
+  Box,
+} from '@mui/material';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import Link from 'next/link';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
 
-// root layout component for all the pages
 export default function RootLayout({ children }) {
+  const [mode, setMode] = useState('light');
+
+  const toggleDarkMode = () => {
+    setMode((prev) => (prev === 'light' ? 'dark' : 'light'));
+  };
+
+  const theme = useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode,
+          primary: { main: '#2e7d32' },
+          secondary: { main: '#ff7043' },
+        },
+        typography: {
+          fontFamily: '"Poppins", Arial, sans-serif',
+        },
+      }),
+    [mode]
+  );
+
   return (
     <html lang="en">
-      <body className="min-h-screen bg-gray-100 text-gray-900">
-        <header className="bg-green-700 text-white p-4">
-          <nav className="flex gap-6">
-            <Link href="/">Home</Link>
-            <Link href="/videos">Videos</Link>
-          </nav>
-        </header>
-        <main className="p-6">{children}</main>
+      <body>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <AppBar position="static">
+            <Toolbar sx={{ justifyContent: 'space-between' }}>
+              <Typography variant="h6">Salamander Tracker</Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Button color="inherit" component={Link} href="/">
+                  Home
+                </Button>
+                <Button color="inherit" component={Link} href="/videos">
+                  Videos
+                </Button>
+                <IconButton onClick={toggleDarkMode} color="inherit">
+                  {mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+                </IconButton>
+              </Box>
+            </Toolbar>
+          </AppBar>
+          <Container sx={{ py: 4 }}>{children}</Container>
+        </ThemeProvider>
       </body>
     </html>
   );
