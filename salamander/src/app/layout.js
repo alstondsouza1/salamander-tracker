@@ -1,4 +1,3 @@
-// === src/app/layout.js ===
 'use client';
 
 import { useState, useMemo } from 'react';
@@ -16,6 +15,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Link from 'next/link';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
+import { FavoritesProvider } from '../context/FavoritesContext'; 
 
 export default function RootLayout({ children }) {
   const [mode, setMode] = useState('light');
@@ -42,26 +42,32 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <AppBar position="static">
-            <Toolbar sx={{ justifyContent: 'space-between' }}>
-              <Typography variant="h6">Salamander Tracker</Typography>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Button color="inherit" component={Link} href="/">
-                  Home
-                </Button>
-                <Button color="inherit" component={Link} href="/videos">
-                  Videos
-                </Button>
-                <IconButton onClick={toggleDarkMode} color="inherit">
-                  {mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
-                </IconButton>
-              </Box>
-            </Toolbar>
-          </AppBar>
-          <Container sx={{ py: 4 }}>{children}</Container>
-        </ThemeProvider>
+        <FavoritesProvider>
+          {/* 🆕 Wrap layout in context provider */}
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <AppBar position="static">
+              <Toolbar sx={{ justifyContent: 'space-between' }}>
+                <Typography variant="h6">Salamander Tracker</Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <Button color="inherit" component={Link} href="/">
+                    Home
+                  </Button>
+                  <Button color="inherit" component={Link} href="/videos">
+                    Videos
+                  </Button>
+                  <Button color="inherit" component={Link} href="/favorites">
+                    Favorites
+                  </Button>
+                  <IconButton onClick={toggleDarkMode} color="inherit">
+                    {mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+                  </IconButton>
+                </Box>
+              </Toolbar>
+            </AppBar>
+            <Container sx={{ py: 4 }}>{children}</Container>
+          </ThemeProvider>
+        </FavoritesProvider>
       </body>
     </html>
   );

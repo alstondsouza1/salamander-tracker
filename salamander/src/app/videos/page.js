@@ -1,4 +1,3 @@
-// === src/app/videos/page.js ===
 "use client";
 
 import { useEffect, useState } from "react";
@@ -16,10 +15,13 @@ import {
   Box,
 } from "@mui/material";
 import VideoLibraryIcon from '@mui/icons-material/VideoLibrary';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import { useFavorites } from '../../context/FavoritesContext';
 
 export default function VideoChooserPage() {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { favorites, toggleFavorite } = useFavorites();
 
   useEffect(() => {
     const fetchVideos = async () => {
@@ -77,7 +79,7 @@ export default function VideoChooserPage() {
                         </Typography>
                       </Box>
                     </CardContent>
-                    <CardActions>
+                    <CardActions sx={{ flexDirection: 'column', alignItems: 'stretch' }}>
                       <Button
                         component={Link}
                         href={`/preview/${encodeURIComponent(video)}`}
@@ -86,6 +88,15 @@ export default function VideoChooserPage() {
                         fullWidth
                       >
                         🔍 Preview
+                      </Button>
+                      <Button
+                        variant={favorites.includes(video) ? "contained" : "outlined"}
+                        color="primary"
+                        fullWidth
+                        startIcon={<FavoriteIcon />}
+                        onClick={() => toggleFavorite(video)}
+                      >
+                        {favorites.includes(video) ? "Unfavorite" : "Save to Favorites"}
                       </Button>
                     </CardActions>
                   </Card>
