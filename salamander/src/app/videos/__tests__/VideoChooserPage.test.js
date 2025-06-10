@@ -1,29 +1,47 @@
-import { render, screen } from "@testing-library/react";
-import VideoChooserPage from "../page";
+import { render, screen, fireEvent, cleanup } from "@testing-library/react";
+import VideoChooserPage from "@/app/videos/page";
+import { FavoritesProvider } from "@/context/FavoritesContext";
 
-// mock fetch since the component fetches videos from an API
+// Clean up after each test
+afterEach(() => {
+  cleanup();
+  jest.clearAllMocks();
+});
+
+// Mock fetch response before all tests
 beforeAll(() => {
   global.fetch = jest.fn(() =>
     Promise.resolve({
-      json: () => Promise.resolve(["video1.mp4", "video2.mov"]),
+      json: () => Promise.resolve(["mock-video1.mp4", "mock-video2.mov"]),
     })
   );
 });
 
-afterAll(() => {
-  global.fetch.mockClear();
-  delete global.fetch;
-});
-
 describe("VideoChooserPage", () => {
-  it("renders a list of videos", async () => {
-    render(<VideoChooserPage />);
+  it("renders video titles", async () => {
+    render(
+      <FavoritesProvider>
+        <VideoChooserPage />
+      </FavoritesProvider>
+    );
 
-    // wait for the videos to load
-    const video1 = await screen.findByText("video1.mp4");
-    const video2 = await screen.findByText("video2.mov");
+    expect(await screen.findByText("mock-video1.mp4")).toBeInTheDocument();
+    expect(await screen.findByText("mock-video2.mov")).toBeInTheDocument();
+  });
 
-    expect(video1).toBeInTheDocument();
-    expect(video2).toBeInTheDocument();
+  it("can toggle favorite state", async () => {
+    render(
+      <FavoritesProvider>
+        <VideoChooserPage />
+      </FavoritesProvider>
+    );
+
+    // Find all buttons with this label
+    const favButtons = await screen.findAllByText("Save to Favorites");
+    const firstFavButton = favButtons[0];
+
+    fireEvent.click(firstFavButton);
+
+    expect(await screen.findByText("Unfavorite")).toBeInTheDocument();
   });
 });
