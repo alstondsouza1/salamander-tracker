@@ -11,8 +11,10 @@ import {
   CardActions,
   Button,
   Box,
+  Zoom,
 } from "@mui/material";
 import VideoLibraryIcon from "@mui/icons-material/VideoLibrary";
+import StarIcon from "@mui/icons-material/Star";
 
 export default function FavoritesPage() {
   const { favorites } = useFavorites();
@@ -28,27 +30,32 @@ export default function FavoritesPage() {
       ) : (
         <Grid container spacing={4}>
           {favorites.map((video, idx) => (
-            <Grid item xs={12} sm={6} md={4} key={idx}>
-              <Card elevation={4}>
-                <CardContent>
-                  <Box display="flex" alignItems="center" gap={1}>
-                    <VideoLibraryIcon color="primary" />
-                    <Typography variant="h6">{video}</Typography>
-                  </Box>
-                </CardContent>
-                <CardActions>
-                  <Button
-                    component={Link}
-                    href={`/preview/${encodeURIComponent(video)}`}
-                    variant="contained"
-                    color="secondary"
-                    fullWidth
-                  >
-                    Preview
-                  </Button>
-                </CardActions>
-              </Card>
-            </Grid>
+            <Zoom in key={idx} style={{ transitionDelay: `${idx * 80}ms` }}>
+              <Grid item xs={12} sm={6} md={4}>
+                <Card elevation={6} sx={{ borderLeft: '6px solid #f97316' }}>
+                  <CardContent>
+                    <Box display="flex" alignItems="center" gap={1}>
+                      <VideoLibraryIcon color="primary" />
+                      <Typography variant="h6" fontWeight={600} noWrap>
+                        {video}
+                      </Typography>
+                    </Box>
+                  </CardContent>
+                  <CardActions sx={{ justifyContent: "space-between", px: 2, pb: 2 }}>
+                    <Button
+                      component={Link}
+                      href={`/preview/${encodeURIComponent(video)}`}
+                      variant="contained"
+                      color="secondary"
+                      fullWidth
+                      startIcon={<StarIcon />}
+                    >
+                      Preview Again
+                    </Button>
+                  </CardActions>
+                </Card>
+              </Grid>
+            </Zoom>
           ))}
         </Grid>
       )}

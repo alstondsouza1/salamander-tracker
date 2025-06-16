@@ -41,11 +41,10 @@ export default function VideoChooserPage() {
 
   return (
     <Container sx={{ py: 6 }}>
-      <Typography variant="h4" gutterBottom fontWeight="bold">
+      <Typography variant="h4" fontWeight={700} gutterBottom>
         📼 Available Salamander Videos
       </Typography>
-
-      <Typography variant="body2" gutterBottom sx={{ mb: 4 }}>
+      <Typography sx={{ mb: 4 }}>
         Click any video below to enter the preview and processing interface.
       </Typography>
 
@@ -53,33 +52,23 @@ export default function VideoChooserPage() {
         {loading
           ? Array.from(new Array(6)).map((_, idx) => (
               <Grid item xs={12} sm={6} md={4} key={idx}>
-                <Skeleton variant="rectangular" height={140} />
-                <Skeleton width="80%" />
+                <Skeleton variant="rounded" height={180} />
+                <Skeleton width="60%" />
               </Grid>
             ))
           : videos.map((video, idx) => (
               <Zoom in key={idx} style={{ transitionDelay: `${idx * 100}ms` }}>
                 <Grid item xs={12} sm={6} md={4}>
-                  <Card
-                    elevation={4}
-                    sx={{
-                      border: '2px dashed #ccc',
-                      borderRadius: 3,
-                      transition: 'transform 0.3s ease-in-out',
-                      '&:hover': {
-                        transform: 'scale(1.03)',
-                      },
-                    }}
-                  >
+                  <Card elevation={6}>
                     <CardContent>
                       <Box display="flex" alignItems="center" gap={1}>
                         <VideoLibraryIcon color="primary" />
-                        <Typography variant="h6" noWrap>
+                        <Typography fontWeight={600} noWrap>
                           {video}
                         </Typography>
                       </Box>
                     </CardContent>
-                    <CardActions sx={{ flexDirection: 'column', alignItems: 'stretch' }}>
+                    <CardActions sx={{ flexDirection: 'column', gap: 1 }}>
                       <Button
                         component={Link}
                         href={`/preview/${encodeURIComponent(video)}`}

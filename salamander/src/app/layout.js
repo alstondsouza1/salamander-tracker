@@ -15,7 +15,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Link from 'next/link';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
-import { FavoritesProvider } from '../context/FavoritesContext'; 
+import { FavoritesProvider } from '../context/FavoritesContext';
 
 export default function RootLayout({ children }) {
   const [mode, setMode] = useState('light');
@@ -29,11 +29,34 @@ export default function RootLayout({ children }) {
       createTheme({
         palette: {
           mode,
-          primary: { main: '#2e7d32' },
-          secondary: { main: '#ff7043' },
+          primary: { main: '#1e3a8a' },
+          secondary: { main: '#f97316' },
+          background: {
+            default: mode === 'dark' ? '#0f172a' : '#f8fafc',
+            paper: mode === 'dark' ? '#1e293b' : '#ffffff',
+          },
         },
         typography: {
-          fontFamily: '"Poppins", Arial, sans-serif',
+          fontFamily: '"Inter", "Poppins", sans-serif',
+          button: {
+            textTransform: 'none',
+            fontWeight: 600,
+          },
+        },
+        shape: {
+          borderRadius: 12,
+        },
+        components: {
+          MuiCard: {
+            styleOverrides: {
+              root: {
+                transition: 'transform 0.2s ease',
+                '&:hover': {
+                  transform: 'scale(1.02)',
+                },
+              },
+            },
+          },
         },
       }),
     [mode]
@@ -43,7 +66,6 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <FavoritesProvider>
-          {/* 🆕 Wrap layout in context provider */}
           <ThemeProvider theme={theme}>
             <CssBaseline />
             <AppBar position="static">

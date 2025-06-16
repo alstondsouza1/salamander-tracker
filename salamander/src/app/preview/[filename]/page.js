@@ -1,4 +1,3 @@
-// === src/app/preview/[filename]/page.js ===
 "use client";
 
 import { useEffect, useState } from "react";
@@ -13,6 +12,7 @@ import {
   Paper,
   Box,
   CircularProgress,
+  Divider,
 } from "@mui/material";
 
 export default function PreviewPage() {
@@ -29,9 +29,7 @@ export default function PreviewPage() {
   useEffect(() => {
     const fetchThumbnail = async () => {
       try {
-        const res = await fetch(
-          `http://localhost:3001/api/videos/thumbnail/${filename}`
-        );
+        const res = await fetch(`http://localhost:3001/api/videos/thumbnail/${filename}`);
         const blob = await res.blob();
         setThumbnail(URL.createObjectURL(blob));
       } catch (err) {
@@ -93,12 +91,16 @@ export default function PreviewPage() {
   };
 
   return (
-    <Container sx={{ py: 4 }}>
-      <Typography variant="h4" gutterBottom>
+    <Container sx={{ py: 6 }}>
+      <Typography variant="h4" fontWeight="bold" gutterBottom>
         Preview Processing
       </Typography>
 
-      <Grid container spacing={4} alignItems="center" sx={{ mb: 4 }}>
+      <Typography sx={{ mb: 4 }}>
+        Adjust the color and threshold below to binarize your salamander video and detect its centroid.
+      </Typography>
+
+      <Grid container spacing={4} alignItems="center" sx={{ mb: 2 }}>
         <Grid item>
           <TextField
             label="Target Color"
@@ -118,7 +120,7 @@ export default function PreviewPage() {
             value={threshold}
             onChange={(e, val) => setThreshold(val)}
             valueLabelDisplay="auto"
-            color="success"
+            color="secondary"
             aria-label="Threshold slider"
           />
         </Grid>
@@ -126,14 +128,14 @@ export default function PreviewPage() {
 
       <Grid container spacing={4}>
         <Grid item xs={12} md={6}>
-          <Paper sx={{ p: 2, position: "relative" }} elevation={3}>
+          <Paper sx={{ p: 2, position: "relative", height: "100%" }} elevation={4}>
             <Typography fontWeight="bold" gutterBottom>
               Original Frame (with centroid)
             </Typography>
             <img
               src={thumbnail}
               alt="Original"
-              style={{ width: "100%", border: "1px solid #ccc", borderRadius: 8 }}
+              style={{ width: "100%", border: "1px solid #ccc", borderRadius: 12 }}
             />
             <div
               style={{
@@ -153,7 +155,7 @@ export default function PreviewPage() {
         </Grid>
 
         <Grid item xs={12} md={6}>
-          <Paper sx={{ p: 2, position: "relative" }} elevation={3}>
+          <Paper sx={{ p: 2, position: "relative", height: "100%" }} elevation={4}>
             <Typography fontWeight="bold" gutterBottom>
               Binarized Frame (with centroid)
             </Typography>
@@ -161,7 +163,7 @@ export default function PreviewPage() {
               <img
                 src={binarized}
                 alt="Binarized"
-                style={{ width: "100%", border: "1px solid #ccc", borderRadius: 8 }}
+                style={{ width: "100%", border: "1px solid #ccc", borderRadius: 12 }}
               />
             ) : (
               <Typography color="error">Binarized frame not available.</Typography>
@@ -184,29 +186,34 @@ export default function PreviewPage() {
         </Grid>
       </Grid>
 
+      <Divider sx={{ my: 5 }} />
+
       <Button
         variant="contained"
-        color="success"
+        color="secondary"
         onClick={handleProcessClick}
-        sx={{ mt: 4 }}
+        size="large"
+        sx={{ fontWeight: 600, px: 4, py: 1.5 }}
         aria-label="Process video button"
       >
         Process Video with These Settings
       </Button>
 
       {status === "processing" && (
-        <Box mt={3} display="flex" alignItems="center" gap={2}>
-          <CircularProgress color="warning" />
+        <Box mt={4} display="flex" alignItems="center" gap={2}>
+          <CircularProgress color="primary" />
           <Typography>Processing video...</Typography>
         </Box>
       )}
 
       {status === "done" && (
-        <Box mt={3}>
-          <Typography color="green">Processing complete!</Typography>
+        <Box mt={4}>
+          <Typography color="success.main" fontWeight="medium">
+            ✅ Processing complete!
+          </Typography>
           <a href={resultUrl} download>
-            <Button variant="outlined" sx={{ mt: 1 }}>
-              Download CSV
+            <Button variant="outlined" sx={{ mt: 2 }}>
+              📄 Download CSV
             </Button>
           </a>
         </Box>
