@@ -17,13 +17,16 @@ import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import { FavoritesProvider } from '../context/FavoritesContext';
 
+// root layout shared by all pages
 export default function RootLayout({ children }) {
   const [mode, setMode] = useState('light');
 
+  // toggle between light and dark mode
   const toggleDarkMode = () => {
     setMode((prev) => (prev === 'light' ? 'dark' : 'light'));
   };
 
+  // theme object based on selected mode
   const theme = useMemo(
     () =>
       createTheme({

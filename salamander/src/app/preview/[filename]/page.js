@@ -1,7 +1,9 @@
 "use client";
 
+// import hooks and modules
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+
 import {
   Container,
   Typography,
@@ -15,17 +17,19 @@ import {
   Divider,
 } from "@mui/material";
 
+// main components to preview and process video
 export default function PreviewPage() {
-  const { filename } = useParams();
-  const [thumbnail, setThumbnail] = useState("");
-  const [binarized, setBinarized] = useState(null);
-  const [targetColor, setTargetColor] = useState("#ff0000");
-  const [threshold, setThreshold] = useState(50);
-  const [centroid, setCentroid] = useState({ x: 100, y: 100 });
-  const [jobId, setJobId] = useState(null);
-  const [status, setStatus] = useState(null);
-  const [resultUrl, setResultUrl] = useState(null);
+  const { filename } = useParams(); // gets the filename from the URL
+  const [thumbnail, setThumbnail] = useState(""); // stores original frame preview image
+  const [binarized, setBinarized] = useState(null); // stores binarized frame preview image
+  const [targetColor, setTargetColor] = useState("#ff0000"); // color picker for target color
+  const [threshold, setThreshold] = useState(50); // threshold slider value
+  const [centroid, setCentroid] = useState({ x: 100, y: 100 }); // detected centroid position
+  const [jobId, setJobId] = useState(null); // stores job ID for processing
+  const [status, setStatus] = useState(null); // processing status (null, "processing", "done")
+  const [resultUrl, setResultUrl] = useState(null); // link to download results
 
+  // fetch thumnail and binarized frame when color 
   useEffect(() => {
     const fetchThumbnail = async () => {
       try {
@@ -62,6 +66,7 @@ export default function PreviewPage() {
     fetchPreview();
   }, [filename, targetColor, threshold]);
 
+  // trigger processing when target color or threshold changes
   const handleProcessClick = async () => {
     const hex = targetColor.replace("#", "");
     try {

@@ -1,5 +1,6 @@
 "use client";
 
+// import hooks and components needed from libraries anc context
 import { useFavorites } from "../../context/FavoritesContext";
 import Link from "next/link";
 import {
@@ -16,6 +17,7 @@ import {
 import VideoLibraryIcon from "@mui/icons-material/VideoLibrary";
 import StarIcon from "@mui/icons-material/Star";
 
+// component to display favorite videos
 export default function FavoritesPage() {
   const { favorites } = useFavorites();
 
@@ -28,6 +30,8 @@ export default function FavoritesPage() {
       {favorites.length === 0 ? (
         <Typography>No favorites yet. Go star some videos!</Typography>
       ) : (
+
+        // display each favorite video in a grid layout
         <Grid container spacing={4}>
           {favorites.map((video, idx) => (
             <Zoom in key={idx} style={{ transitionDelay: `${idx * 80}ms` }}>
@@ -41,6 +45,8 @@ export default function FavoritesPage() {
                       </Typography>
                     </Box>
                   </CardContent>
+
+                   {/* Action button linking to preview page */}
                   <CardActions sx={{ justifyContent: "space-between", px: 2, pb: 2 }}>
                     <Button
                       component={Link}

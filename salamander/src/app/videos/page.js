@@ -1,5 +1,6 @@
 "use client";
 
+// import required hooks and components
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
@@ -18,11 +19,13 @@ import VideoLibraryIcon from '@mui/icons-material/VideoLibrary';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { useFavorites } from '../../context/FavoritesContext';
 
+// functional component to list and interact with available videos
 export default function VideoChooserPage() {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const { favorites, toggleFavorite } = useFavorites();
 
+  // fetch videso from the API when component mounts
   useEffect(() => {
     const fetchVideos = async () => {
       try {
@@ -48,6 +51,7 @@ export default function VideoChooserPage() {
         Click any video below to enter the preview and processing interface.
       </Typography>
 
+      {/* display loading skeletons or video cards */}
       <Grid container spacing={4}>
         {loading
           ? Array.from(new Array(6)).map((_, idx) => (
@@ -68,6 +72,8 @@ export default function VideoChooserPage() {
                         </Typography>
                       </Box>
                     </CardContent>
+
+                    {/* buttons to preview or favorite the video */}
                     <CardActions sx={{ flexDirection: 'column', gap: 1 }}>
                       <Button
                         component={Link}

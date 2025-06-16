@@ -14,7 +14,9 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 
+// homepage component for Salamander Tracker
 export default function HomePage() {
+  // state to show/hide extra information
   const [showMore, setShowMore] = useState(false);
 
   return (
@@ -49,6 +51,7 @@ export default function HomePage() {
           },
         }}
       >
+        {/* heading */}
         <Zoom in timeout={1200}>
           <Typography
             variant="h2"
@@ -60,6 +63,7 @@ export default function HomePage() {
           </Typography>
         </Zoom>
 
+        {/* short description */}
         <Typography
           variant="h6"
           sx={{ maxWidth: "700px", textShadow: "1px 1px 6px #000", mb: 2 }}
@@ -69,6 +73,7 @@ export default function HomePage() {
           CSV for analysis.
         </Typography>
 
+         {/* learn More toggle button */}
         <Button
           onClick={() => setShowMore(!showMore)}
           variant="outlined"
