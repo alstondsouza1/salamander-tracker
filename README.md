@@ -143,6 +143,9 @@ If backend is Dockerized, ensure ports and volumes are exposed to support cross-
 
 ## 📸 Screenshots
 
+### 🎬 Home Page Preview
+![Home Page Preview](salamander/public/images/home-page.png)
+
 ### 🎬 Video Selection Page
 ![Video Selection](salamander/public/images/video-selection.png)
 
