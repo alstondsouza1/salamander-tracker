@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useState } from "react";
 import {
@@ -13,10 +13,9 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import Image from "next/image";
+import SalamanderSwarm from "@/components/SalamanderSwarm";
 
-// homepage component for Salamander Tracker
 export default function HomePage() {
-  // state to show/hide extra information
   const [showMore, setShowMore] = useState(false);
 
   return (
@@ -34,6 +33,8 @@ export default function HomePage() {
           alignItems: "flex-start",
           boxShadow: 4,
           color: "white",
+
+          // darkened background image
           "::before": {
             content: '""',
             position: "absolute",
@@ -45,102 +46,114 @@ export default function HomePage() {
             filter: "brightness(0.4)",
             zIndex: 0,
           },
-          "& > *": {
-            position: "relative",
-            zIndex: 1,
-          },
         }}
       >
-        {/* heading */}
-        <Zoom in timeout={1200}>
-          <Typography
-            variant="h2"
-            fontWeight={800}
-            gutterBottom
-            sx={{ textShadow: "2px 2px 10px #000" }}
-          >
-            Welcome to Salamander Tracker
-          </Typography>
-        </Zoom>
+        {/* ─── Salamander Swarm ─────────────────────────────── */}
+        <SalamanderSwarm
+          spriteUrl="/salamander-small.png"
+          count={30}
+          style={{
+            position: "absolute",
+            inset: 0,
+            pointerEvents: "none",
+            zIndex: 0,
+          }}
+        />
 
-        {/* short description */}
-        <Typography
-          variant="h6"
-          sx={{ maxWidth: "700px", textShadow: "1px 1px 6px #000", mb: 2 }}
-        >
-          Salamander Tracker helps researchers study salamanders using computer
-          vision. It detects movement, calculates centroids, and logs data to
-          CSV for analysis.
-        </Typography>
-
-         {/* learn More toggle button */}
-        <Button
-          onClick={() => setShowMore(!showMore)}
-          variant="outlined"
-          size="small"
-          sx={{ mb: 2, color: "white", borderColor: "white" }}
-        >
-          {showMore ? "Hide Details" : "Learn More"}
-        </Button>
-
-        <Collapse in={showMore} timeout="auto" unmountOnExit>
-          <Paper
-            elevation={0}
-            sx={{
-              backgroundColor: "rgba(0,0,0,0.4)",
-              p: 2,
-              maxWidth: "90%",
-              backdropFilter: "blur(4px)",
-              borderRadius: 2,
-              mb: 2,
-            }}
-          >
-            <Typography variant="body1" sx={{ color: "#f1f1f1" }}>
-              Designed in collaboration with researchers at Ohio State
-              University, this tool automates the process of analyzing
-              salamander behavior. By extracting position data frame-by-frame
-              and saving it to CSV files, Salamander Tracker accelerates
-              research into movement patterns, environmental adaptation, and
-              more — all within a visually interactive platform.
+        {/* wrap everything else above the swarm */}
+        <Box sx={{ position: "relative", zIndex: 1, width: "100%" }}>
+          {/* heading */}
+          <Zoom in timeout={1200}>
+            <Typography
+              variant="h2"
+              fontWeight={800}
+              gutterBottom
+              sx={{ textShadow: "2px 2px 10px #000" }}
+            >
+              Welcome to Salamander Tracker
             </Typography>
-          </Paper>
-        </Collapse>
+          </Zoom>
 
-        <Box>
-          <Button
-            component={Link}
-            href="/videos"
-            variant="contained"
-            color="secondary"
-            size="large"
-            sx={{
-              px: 5,
-              py: 1.8,
-              fontWeight: 700,
-              borderRadius: 3,
-              boxShadow: 3,
-              ":hover": {
-                backgroundColor: "secondary.dark",
-                transform: "scale(1.05)",
-              },
-              transition: "all 0.3s ease",
-            }}
+          {/* short description */}
+          <Typography
+            variant="h6"
+            sx={{ maxWidth: "700px", textShadow: "1px 1px 6px #000", mb: 2 }}
           >
-            Get Started
-          </Button>
-        </Box>
+            Salamander Tracker helps researchers study salamanders using computer
+            vision. It detects movement, calculates centroids, and logs data to
+            CSV for analysis.
+          </Typography>
 
-        <Box mt={6} sx={{ display: { xs: "none", md: "block" } }}>
-          <Image
-            src="/images/salamander-sample.png"
-            alt="Salamander Preview"
-            width={480}
-            height={300}
-            style={{
-              borderRadius: "16px",
-              boxShadow: "0 6px 18px rgba(0,0,0,0.6)",
-            }}
-          />
+          {/* learn More toggle button */}
+          <Button
+            onClick={() => setShowMore(!showMore)}
+            variant="outlined"
+            size="small"
+            sx={{ mb: 2, color: "white", borderColor: "white" }}
+          >
+            {showMore ? "Hide Details" : "Learn More"}
+          </Button>
+
+          <Collapse in={showMore} timeout="auto" unmountOnExit>
+            <Paper
+              elevation={0}
+              sx={{
+                backgroundColor: "rgba(0,0,0,0.4)",
+                p: 2,
+                maxWidth: "90%",
+                backdropFilter: "blur(4px)",
+                borderRadius: 2,
+                mb: 2,
+              }}
+            >
+              <Typography variant="body1" sx={{ color: "#f1f1f1" }}>
+                Designed in collaboration with researchers at Ohio State
+                University, this tool automates the process of analyzing
+                salamander behavior. By extracting position data frame-by-frame
+                and saving it to CSV files, Salamander Tracker accelerates
+                research into movement patterns, environmental adaptation, and
+                more — all within a visually interactive platform.
+              </Typography>
+            </Paper>
+          </Collapse>
+
+          <Box>
+            <Button
+              component={Link}
+              href="/videos"
+              variant="contained"
+              color="secondary"
+              size="large"
+              sx={{
+                px: 5,
+                py: 1.8,
+                fontWeight: 700,
+                borderRadius: 3,
+                boxShadow: 3,
+                ":hover": {
+                  backgroundColor: "secondary.dark",
+                  transform: "scale(1.05)",
+                },
+                transition: "all 0.3s ease",
+              }}
+            >
+              Get Started
+            </Button>
+          </Box>
+
+          {/* sample preview image, hidden on small */}
+          <Box mt={6} sx={{ display: { xs: "none", md: "block" } }}>
+            <Image
+              src="/images/salamander-sample.png"
+              alt="Salamander Preview"
+              width={480}
+              height={300}
+              style={{
+                borderRadius: "16px",
+                boxShadow: "0 6px 18px rgba(0,0,0,0.6)",
+              }}
+            />
+          </Box>
         </Box>
       </Box>
     </Fade>
